@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escanear Código QR</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header">
+            <nav>
+                <a href="index.html">Código QR</a>
+                <a href="asistencia.html">Ver asistencia</a>
+                <a href="generar_qr.html">Generar QR</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>📷 Escanear Código QR</h2>
+        <div id="reader"></div>
+        <p id="result-container">Resultado: <span id="result">Esperando escaneo...</span></p>
+    </div>
+
+    <div id="confirmation-screen" style="display: none;">
+        <h2>✅ Escaneado con éxito</h2>
+        <p id="confirmation-message">Los datos han sido registrados correctamente.</p>
+    </div>
+
+    <script>
+        let html5QrCode;
+
+        // Función que se llama cuando el código QR es escaneado con éxito
+        function onScanSuccess(decodedText) {
+            if (verificarCodigoUnico(decodedText)) {
+                registrarAsistencia(decodedText);
+                mostrarConfirmacion("✅ Escaneado con éxito", "Los datos han sido registrados correctamente.");
+                detenerEscaneo();
+                setTimeout(() => {
+                    ocultarConfirmacion();
+                    iniciarEscaneo();
+                }, 5000); // Esperar 5 segundos y luego reiniciar el escaneo
+            } else {
+                mostrarConfirmacion("⚠️ Código ya escaneado", "Este código ya ha sido escaneado previamente.");
+                detenerEscaneo();
+                setTimeout(() => {
+                    ocultarConfirmacion();
+                    iniciarEscaneo();
+                }, 5000); // Esperar 5 segundos y luego reiniciar el escaneo
+            }
+        }
+
+        // Función para registrar los datos de asistencia en localStorage
+        function registrarAsistencia(decodedText) {
+            try {
+                let data = JSON.parse(decodedText);  // Suponiendo que el código QR contiene un objeto JSON
+                let asistencia = JSON.parse(localStorage.getItem("asistencia")) || [];
+
+                // Verificar si ya existe la matrícula en la lista de asistencia
+                let existe = asistencia.some(a => a.matricula === data.matricula);
+                if (existe) {
+                    alert("⚠️ Código ya escaneado. Este código ya ha sido escaneado previamente.");
+                    return;
+                }
+
+                // Agregar los datos escaneados a la lista de asistencia
+                asistencia.push({
+                    matricula: data.matricula,
+                    nombre: data.nombre,
+                    fecha: new Date().toLocaleString()  // Fecha y hora actual
+                });
+
+                // Guardar la lista de asistencia en localStorage
+                localStorage.setItem("asistencia", JSON.stringify(asistencia));
+
+                // Registrar el código escaneado
+                registrarCodigoEscaneado(data.matricula);
+
+                // Llamar a la función que actualiza la tabla en la página de asistencia
+                cargarAsistencia();
+            } catch (error) {
+                console.error("Error al procesar el código QR: ", error);
+            }
+        }
+
+        // Función para registrar el código escaneado y evitar duplicados
+        function registrarCodigoEscaneado(matricula) {
+            let codigosEscaneados = JSON.parse(localStorage.getItem("codigosEscaneados")) || [];
+            codigosEscaneados.push(matricula);
+            localStorage.setItem("codigosEscaneados", JSON.stringify(codigosEscaneados));
+        }
+
+        // Función para verificar si el código QR es único
+        function verificarCodigoUnico(decodedText) {
+            let data = JSON.parse(decodedText);  // Suponiendo que el código QR contiene un objeto JSON
+            let codigosEscaneados = JSON.parse(localStorage.getItem("codigosEscaneados")) || [];
+            return !codigosEscaneados.includes(data.matricula);
+        }
+
+        // Función para mostrar un mensaje de confirmación después de escanear el código QR
+        function mostrarConfirmacion(titulo, mensaje) {
+            document.getElementById("reader").style.display = "none";
+            document.getElementById("result-container").style.display = "none";
+            document.getElementById("confirmation-screen").style.display = "block";
+            document.getElementById("confirmation-screen").innerHTML = `<h2>${titulo}</h2><p>${mensaje}</p>`;
+        }
+
+        // Función para ocultar el mensaje de confirmación y volver a mostrar el escáner
+        function ocultarConfirmacion() {
+            document.getElementById("confirmation-screen").style.display = "none";
+            document.getElementById("reader").style.display = "block";
+            document.getElementById("result-container").style.display = "block";
+            document.getElementById("result").innerText = "Esperando escaneo...";
+        }
+
+        // Función para iniciar el escaneo de QR
+        function iniciarEscaneo() {
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },  // Utilizar la cámara trasera si está disponible
+                { fps: 10, qrbox: 250 },  // Configurar el frame rate y tamaño del cuadro para el escaneo
+                onScanSuccess  // Función de éxito al escanear el código QR
+            );
+        }
+
+        // Función para detener el escaneo
+        function detenerEscaneo() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    console.log("Escaneo detenido");
+                }).catch(err => {
+                    console.error("Error al detener el escaneo:", err);
+                });
+            }
+        }
+
+        // Iniciar escaneo al cargar la página
+        window.onload = iniciarEscaneo;
+    </script>
+</body>
+</html>
