@@ -1,0 +1,159 @@
+/* Estilo para el header */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Asegura que el header esté siempre al frente */
+}
+
+.header nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+/* Estilo para la tabla */
+table {
+    width: 80%;
+    border-collapse: collapse;
+    margin: 80px auto 20px auto; /* Ajusta el margen superior para evitar solapamiento con el header */
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    display: block;
+    max-height: 400px; /* Activa el scroll */
+}
+
+/* Estilo para thead */
+thead {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(5px);
+    position: sticky; /* Asegura que el thead permanezca visible durante el scroll */
+    top: 0; /* Posiciona el thead en la parte superior */
+    z-index: 500; /* Asegura que el thead esté al frente pero detrás del header */
+}
+
+/* Estilo para th y td */
+th, td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    width: 33.33%; /* Ajusta el ancho de cada celda al 33.33% del ancho total de la tabla */
+}
+
+tbody {
+    display: block;
+    max-height: 300px; /* Altura máxima con scroll */
+    overflow-y: auto;
+    width: 100%;
+}
+
+tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+th {
+    font-weight: bold;
+    color: #000;
+}
+
+tbody tr:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Estilo para el body */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to right, #2b7dbd, #00f2fe);
+    color: #fff;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+h2 {
+    margin-bottom: 10px;
+    font-size: 24px;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: center;
+    outline: none;
+}
+
+button {
+    background: #ff416c;
+    background: linear-gradient(to right, #ff4b2b, #ff416c);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+}
+
+#qrcode {
+    margin: 20px auto;
+    padding: 15px;
+    background: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+#borrar-asistencia {
+    display: none; /* Ocultar el botón por defecto */
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #ff416c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#borrar-asistencia:hover {
+    transform: scale(1.05);
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+}
